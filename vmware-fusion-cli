@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Check if at least two arguments are provided
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 <start|stop> <vm_name1> [<vm_name2> ...]"
+    exit 1
+fi
+
+ACTION="$1"
+shift  # Remove the first argument (action) from the list
+
+# Validate action
+if [ "$ACTION" != "start" ] && [ "$ACTION" != "stop" ]; then
+    echo "Error: Action must be 'start' or 'stop'"
+    exit 1
+fi
+
+
+# Iterate over each VM name provided
+for VM_NAME in "$@"; do
+
+    # Perform the action
+    case "$ACTION" in
+        start)
+            echo "Starting VM '$VM_NAME' with path '$VM_PATH'..."
+            /Applications/VMware\ Fusion.app/Contents/Library/vmrun -T fusion start /Users/${USER}/Virtual\ Machines.localized/${VM_NAME}.vmwarevm/${VM_NAME}.vmx nogui
+            ;;
+        stop)
+            echo "Stopping VM '$VM_NAME' with path '$VM_PATH'..."
+            /Applications/VMware\ Fusion.app/Contents/Library/vmrun -T fusion stop /Users/${USER}/Virtual\ Machines.localized/${VM_NAME}.vmwarevm/${VM_NAME}.vmx nogui
+            ;;
+    esac
+done
